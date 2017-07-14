@@ -1,8 +1,8 @@
 #Makefile
 all: pcap_test
 
-pcap_test: main.o net_header.o
-	gcc -o pcap_test main.o net_header.o -lpcap
+pcap_test: main.o 
+	gcc -o pcap_test main.o -lpcap
 
 main.o: net_header.h main.c
 
