@@ -5,7 +5,7 @@ struct _ethernet{
     unsigned char dest[ETHERNET_ALEN];
     unsigned char src[ETHERNET_ALEN];
     unsigned short int type;
-};
+}__attribute__((packed));
 
 struct _ip{
     unsigned char v:4, hl:4;/* this means that each member is 4 bits */
@@ -18,7 +18,7 @@ struct _ip{
     unsigned short int sum;  //2 Byte
     unsigned int src;        //4 Byte
     unsigned int dst;        //4 Byte
-};
+}__attribute__((packed));
 
 struct _tcp{
     unsigned short int src_port;
@@ -30,4 +30,4 @@ struct _tcp{
     unsigned short int window_size;
     unsigned short int checksum;
     unsigned short int urgent_p;
-};
+}__attribute__((packed));
