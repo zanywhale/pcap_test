@@ -1,5 +1,6 @@
 #include <pcap.h>
 #include <stdio.h>
+#include "header.h"
 
 int main(int argc, char *argv[])
 {
@@ -13,6 +14,11 @@ int main(int argc, char *argv[])
 	struct pcap_pkthdr *header;	/* The header that pcap gives us */
 	const u_char *packet;		/* The actual packet */
 	int res;
+
+	// struct
+	Ethernet_H eth_h;
+	Ip_H ip_h;
+	Tcp_H tcp_h;
 
 	/* Define the device */
 	dev = pcap_lookupdev(errbuf);
@@ -45,7 +51,9 @@ int main(int argc, char *argv[])
 	while(1){
 		res = pcap_next_ex(handle, &header, &packet);
 		/* Print its length */
-		printf("Jacked a packet with length of [%d]\n", header->len);
+		if(res){
+			
+		}
 	}
 	/* And close the session */
 	pcap_close(handle);
