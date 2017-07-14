@@ -75,6 +75,7 @@ int main(int argc, char *argv[])
 					(unsigned char)(ip_h->dst>>24)&0xff);
 			printf("TCP Dest Port : %hu\n", ((((tcp_h->dst_port)>>8)&0xff) + (((tcp_h->dst_port)<<8)&0xff00)));
 			printf("TCP Src Port : %hu\n", ((((tcp_h->src_port)>>8)&0xff) + (((tcp_h->src_port)<<8)&0xff00)));
+			printf("Data : %s\n",(packet+sizeof(Ethernet_H)+sizeof(Ip_H)+sizeof(Tcp_H)));
 			printf("************************************************\n");
 		}
 	}
