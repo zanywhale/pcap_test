@@ -1,4 +1,4 @@
-#include "header.h"
+#include "net_header.h"
 #define ETHERNET_ALEN 6
 
 struct _ethernet{

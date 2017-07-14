@@ -1,6 +1,7 @@
 #include <pcap.h>
 #include <stdio.h>
-#include "header.h"
+#include <stdlib.h>
+#include "net_header.h"
 
 int main(int argc, char *argv[])
 {
@@ -16,9 +17,9 @@ int main(int argc, char *argv[])
 	int res;
 
 	// struct
-	Ethernet_H eth_h;
-	Ip_H ip_h;
-	Tcp_H tcp_h;
+	Ethernet_H *eth_h = malloc(sizeof(struct _ethernet));
+	Ip_H *ip_h = 0;
+	Tcp_H *tcp_h = 0;
 
 	/* Define the device */
 	dev = pcap_lookupdev(errbuf);
@@ -52,7 +53,8 @@ int main(int argc, char *argv[])
 		res = pcap_next_ex(handle, &header, &packet);
 		/* Print its length */
 		if(res){
-			
+			eth_h = (Ethernet_H *)packet;
+			printf("%s\n",eth_h->src);
 		}
 	}
 	/* And close the session */
