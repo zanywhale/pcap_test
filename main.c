@@ -56,13 +56,14 @@ int main(int argc, char *argv[])
 			eth_h = (Ethernet_H *)packet;
 			ip_h = (Ip_H *)(packet+sizeof(Ethernet_H));
 			tcp_h = (Tcp_H *)(packet+sizeof(Ethernet_H)+sizeof(Ip_H));
-			printf("************************************************\n")
+			printf("************************************************\n");
 			printf("Ethernet Dest : %02X:%02X:%02X:%02X:%02X:%02X\n",\
 				eth_h->dest[0]&0xff,eth_h->dest[1]&0xff,eth_h->dest[2]&0xff,\
 				eth_h->dest[3]&0xff,eth_h->dest[4]&0xff,eth_h->dest[5]&0xff);
 			printf("Ethernet src : %02X:%02X:%02X:%02X:%02X:%02X\n",\
 				eth_h->src[0]&0xff,eth_h->src[1]&0xff,eth_h->src[2]&0xff,\
 				eth_h->src[3]&0xff,eth_h->src[4]&0xff,eth_h->src[5]&0xff);
+			printf("************************************************\n");
 		}
 	}
 	/* And close the session */
