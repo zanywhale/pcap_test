@@ -1,10 +1,12 @@
 #Makefile
 all: pcap_test
 
-pcap_test: pcap_test.o
-	gcc -o pcap pcap_test.o -lpcap
+pcap_test: main.o header.o
+	gcc -o pcap_test main.o header.o -lpcap
 
-pcap_test.o: header.h pcap_test.c
+main.o: header.h main.c
+
+header.o: header.h header.c
 
 clean:
 	#rm -f pcap_test
