@@ -6,7 +6,7 @@ pcap_test: main.o net_header.o
 
 main.o: net_header.h main.c
 
-net_header.o: net_header.h net_header.c
+#net_header.o: net_header.h
 
 clean:
 	#rm -f pcap_test
