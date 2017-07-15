@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 		if(res){
 			eth_h = (Ethernet_H *)packet;
 			ip_h = (Ip_H *)(packet+sizeof(Ethernet_H));
-			tcp_h = (Tcp_H *)(packet+sizeof(Ethernet_H)+sizeof(Ip_H));
+			tcp_h = (Tcp_H *)(packet+sizeof(Ethernet_H)+(ip_h->v*4));
 			printf("************************************************\n");
 			printf("Ethernet Dest MAC Addr : %02X:%02X:%02X:%02X:%02X:%02X\n",\
 				eth_h->dest[0]&0xff,eth_h->dest[1]&0xff,eth_h->dest[2]&0xff,\
@@ -63,20 +63,24 @@ int main(int argc, char *argv[])
 			printf("Ethernet Src MAC Addr: %02X:%02X:%02X:%02X:%02X:%02X\n",\
 				eth_h->src[0]&0xff,eth_h->src[1]&0xff,eth_h->src[2]&0xff,\
 				eth_h->src[3]&0xff,eth_h->src[4]&0xff,eth_h->src[5]&0xff);
-			printf("IP Dest : %01u.%01u.%01u.%01u\n",\
-					(unsigned char)ip_h->src&0xff,
-					(unsigned char)(ip_h->src>>8)&0xff,
-					(unsigned char)(ip_h->src>>16)&0xff,
-					(unsigned char)(ip_h->src>>24)&0xff);
-			printf("IP Src : %01u.%01u.%01u.%01u\n",\
-					(unsigned char)ip_h->dst&0xff,
-					(unsigned char)(ip_h->dst>>8)&0xff,
-					(unsigned char)(ip_h->dst>>16)&0xff,
-					(unsigned char)(ip_h->dst>>24)&0xff);
-			printf("TCP Dest Port : %hu\n", ((((tcp_h->dst_port)>>8)&0xff) + (((tcp_h->dst_port)<<8)&0xff00)));
-			printf("TCP Src Port : %hu\n", ((((tcp_h->src_port)>>8)&0xff) + (((tcp_h->src_port)<<8)&0xff00)));
-			printf("Data : %s\n",(packet+sizeof(Ethernet_H)+sizeof(Ip_H)+sizeof(Tcp_H)));
-			printf("************************************************\n");
+			if(ip_h->p == 6){
+				printf("IP Dest : %01u.%01u.%01u.%01u\n",\
+						(unsigned char)ip_h->src&0xff,
+						(unsigned char)(ip_h->src>>8)&0xff,
+						(unsigned char)(ip_h->src>>16)&0xff,
+						(unsigned char)(ip_h->src>>24)&0xff);
+				printf("IP Src : %01u.%01u.%01u.%01u\n",\
+						(unsigned char)ip_h->dst&0xff,
+						(unsigned char)(ip_h->dst>>8)&0xff,
+						(unsigned char)(ip_h->dst>>16)&0xff,
+						(unsigned char)(ip_h->dst>>24)&0xff);
+				if(eth_h->type == 8){
+					printf("TCP Dest Port : %hu\n", ((((tcp_h->dst_port)>>8)&0xff) + (((tcp_h->dst_port)<<8)&0xff00)));
+					printf("TCP Src Port : %hu\n", ((((tcp_h->src_port)>>8)&0xff) + (((tcp_h->src_port)<<8)&0xff00)));
+					printf("Data : %s\n",(packet+sizeof(Ethernet_H)+(ip_h->v*4)+sizeof(Tcp_H)));
+					printf("************************************************\n");
+				}
+			}
 		}
 	}
 	/* And close the session */
