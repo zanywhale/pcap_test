@@ -88,16 +88,16 @@ typedef struct _ethernet{
 }__attribute__((packed))Ethernet_H;
 
 typedef struct _ip{
-    uint8_t v:4, hl:4;/* this means that each member is 4 bits */
-    uint8_t tos;       //1 Byte
-    uint16_t len;  //2 Byte
-    uint16_t id;   //2 Byte
-    uint16_t off;  //2 Byte
-    uint8_t ttl;       //1 Byte
-    uint8_t p;         //1 Byte
-    uint16_t sum;  //2 Byte
-    uint32_t src;        //4 Byte
-    uint32_t dst;        //4 Byte
+    uint8_t chk;
+    uint8_t tos;
+    uint16_t len;
+    uint16_t id;
+    uint16_t off;
+    uint8_t ttl;
+    uint8_t p;
+    uint16_t sum;
+    uint32_t src;
+    uint32_t dst;
 }__attribute__((packed))Ip_H;
 
 typedef struct _tcp{

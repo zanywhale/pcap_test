@@ -1,9 +1,7 @@
-#include <pcap.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <arpa/inet.h>
 #include "net_header.h"
 #include "net_util.h"
+#include "all_header.h"
+
 
 int main(int argc, char *argv[])
 {
@@ -16,7 +14,6 @@ int main(int argc, char *argv[])
 	struct pcap_pkthdr *header;	/* The header that pcap gives us */
 	const u_char *packet;		/* The actual packet */
 	int res;
-	char tmp_buf[20];
 	// struct
 	Ethernet_H *eth_h = malloc(sizeof(Ethernet_H));
 	Ip_H *ip_h = malloc(sizeof(Ip_H));
@@ -41,28 +38,19 @@ int main(int argc, char *argv[])
 	/* Grab a packet */
 	while(1){
 		res = pcap_next_ex(handle, &header, &packet);
-		/* Print its length */
 		if(res == 1){
 			eth_h = (Ethernet_H *)packet;
 			print_boundary();
-			print_MAC_Addr(eth_h);
+			print_MAC_addr(eth_h);
 			if (htons(eth_h->type) == ETHERTYPE_IP){
 				ip_h = (Ip_H *)(packet+sizeof(Ethernet_H));
-				printf("IP Dest : %01u.%01u.%01u.%01u\n",\
-						(unsigned char)ip_h->src&0xff,
-						(unsigned char)(ip_h->src>>8)&0xff,
-						(unsigned char)(ip_h->src>>16)&0xff,
-						(unsigned char)(ip_h->src>>24)&0xff);
-				printf("IP Src : %01u.%01u.%01u.%01u\n",\
-						(unsigned char)ip_h->dst&0xff,
-						(unsigned char)(ip_h->dst>>8)&0xff,
-						(unsigned char)(ip_h->dst>>16)&0xff,
-						(unsigned char)(ip_h->dst>>24)&0xff);
+				print_IP_addr(ip_h);
 				switch (ip_h->p){
 					case IPPROTO_TCP:
-						tcp_h = (Tcp_H *)(packet+sizeof(Ethernet_H)+(ip_h->v*4));
+						tcp_h = (Tcp_H *)(packet+sizeof(Ethernet_H)+(((ip_h->chk)&0xf)*4));
 						print_TCP_port(tcp_h);
-						printf("Data : %s\n",(packet+sizeof(Ethernet_H)+(ip_h->v*4)+sizeof(Tcp_H)));
+						if(((((tcp_h->data_offset)>>4)*4) + ((ip_h->chk)&0xf)*4) != ntohs(ip_h->len))
+							printf("Data : %s\n",(packet+sizeof(Ethernet_H)+(((ip_h->chk)&0xf)*4)+(((tcp_h->data_offset)>>4)*4)));
 						break;
 				}
 			}
