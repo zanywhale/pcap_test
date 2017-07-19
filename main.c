@@ -1,6 +1,9 @@
+#include <pcap.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <arpa/inet.h>
 #include "net_header.h"
 #include "net_util.h"
-#include "all_header.h"
 
 int main(int argc, char *argv[])
 {
@@ -43,7 +46,7 @@ int main(int argc, char *argv[])
 			eth_h = (Ethernet_H *)packet;
 			print_boundary();
 			print_MAC_Addr(eth_h);
-			if(htons(eth_h->type) == ETHERTYPE_IP){
+			if (htons(eth_h->type) == ETHERTYPE_IP){
 				ip_h = (Ip_H *)(packet+sizeof(Ethernet_H));
 				printf("IP Dest : %01u.%01u.%01u.%01u\n",\
 						(unsigned char)ip_h->src&0xff,
@@ -55,10 +58,12 @@ int main(int argc, char *argv[])
 						(unsigned char)(ip_h->dst>>8)&0xff,
 						(unsigned char)(ip_h->dst>>16)&0xff,
 						(unsigned char)(ip_h->dst>>24)&0xff);
-				if(ip_h->p == IPPROTO_TCP){
-					tcp_h = (Tcp_H *)(packet+sizeof(Ethernet_H)+(ip_h->v*4));
-					print_TCP_port(tcp_h);
-					printf("Data : %s\n",(packet+sizeof(Ethernet_H)+(ip_h->v*4)+sizeof(Tcp_H)));
+				switch (ip_h->p){
+					case IPPROTO_TCP:
+						tcp_h = (Tcp_H *)(packet+sizeof(Ethernet_H)+(ip_h->v*4));
+						print_TCP_port(tcp_h);
+						printf("Data : %s\n",(packet+sizeof(Ethernet_H)+(ip_h->v*4)+sizeof(Tcp_H)));
+						break;
 				}
 			}
 			print_boundary();
@@ -66,5 +71,5 @@ int main(int argc, char *argv[])
 	}
 	/* And close the session */
 	pcap_close(handle);
-	return(0);
+	return 0;
 }
