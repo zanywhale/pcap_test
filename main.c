@@ -19,6 +19,10 @@ int main(int argc, char *argv[])
     Ip_H *ip_h = malloc(sizeof(Ip_H));
     Tcp_H *tcp_h = malloc(sizeof(Tcp_H));
 
+    if (argc == 2){
+        printf("Need argv[1]\n");
+        exit(1);
+    }
     /* Open the session in promiscuous mode */
     handle = pcap_open_live(argv[1], BUFSIZ, 1, 1000, errbuf);
     if (handle == NULL) {
